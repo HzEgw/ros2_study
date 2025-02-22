@@ -22,6 +22,7 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
 find_package(rclcpp REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -34,8 +35,9 @@ ament_target_dependencies(odom2tf
 )
 install(TARGETS odom2tf
   DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY 
-  launch
-  DESTINATION share/${PROJECT_NAME}
+
+install(DIRECTORY
+launch
+DESTINATION share/${PROJECT_NAME}
 )
 ament_package()
