@@ -114,7 +114,6 @@ geometry_msgs::msg::PoseStamped CustomController::getNearestTargetPose(
     return global_plan_.poses.at(0);
   }
   return global_plan_.poses.at(1);
-  return current_pose;
 }
 
 double CustomController::calculateAngleDifference(
