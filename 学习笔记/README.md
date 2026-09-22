@@ -51,6 +51,13 @@
 |:---:|---|---|:---:|
 | `01` | 发布者序号 vs 订阅者计数 —— 为什么两边都要 `count` | 订阅者计数 / 丢包可见性 / 本地状态 vs 传输数据 / 队列深度 | 2026-09-20 |
 | `02` | 同名包 / 同名话题为什么会"串" | 包重名 `colcon` 报错 / 话题名是全局契约 / overlay 与 source 顺序 / `ROS_DOMAIN_ID` | 2026-09-20 |
+| `03` | **真正的 publish 实体存在哪里？—— 四层地址链** | `rclcpp::Publisher` / **`shared_ptr<rcl_publisher_t>`** / rmw / **Fast DDS** / DDS 样本缓冲 | 2026-09-22 |
+| `04` | **服务的三个"为什么"** —— `async_send_request` 返回值 / 服务回调为何用智能指针 / 订阅为何能收引用 | `SharedFutureAndRequestId` / `remove_pending_request` / `AnyServiceCallback`（**只有 SharedPtr**）/ `AnySubscriptionCallback`（6 家族）/ 延迟响应 | 2026-09-22 |
+
+> 📌 **双层笔记工作流（2026-09-22 定）**：
+> **① 原始层 = 我写的**（每个工程 `src/README.md`：当天的问题、思考、自我批评，允许乱允许错）
+> **② 成品层 = 本文件夹**（AI 整理：9 段结构 + **源码行号/实测证据** + 索引）
+> 规则：① 的**问题原文**原样保留在 ② 的第 2 节；② 的结论**必须可验证**；我再**用自己的话复述**一遍才算"认领"。
 
 > 📌 **归档变动记录（2026-09-20）**
 > 原 `01_shared_from_this与bad_weak_ptr.md` 已按分类规则**移出本文件夹**：
