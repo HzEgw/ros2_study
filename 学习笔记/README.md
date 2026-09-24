@@ -53,6 +53,10 @@
 | `02` | 同名包 / 同名话题为什么会"串" | 包重名 `colcon` 报错 / 话题名是全局契约 / overlay 与 source 顺序 / `ROS_DOMAIN_ID` | 2026-09-20 |
 | `03` | **真正的 publish 实体存在哪里？—— 四层地址链** | `rclcpp::Publisher` / **`shared_ptr<rcl_publisher_t>`** / rmw / **Fast DDS** / DDS 样本缓冲 | 2026-09-22 |
 | `04` | **服务的三个"为什么"** —— `async_send_request` 返回值 / 服务回调为何用智能指针 / 订阅为何能收引用 | `SharedFutureAndRequestId` / `remove_pending_request` / `AnyServiceCallback`（**只有 SharedPtr**）/ `AnySubscriptionCallback`（6 家族）/ 延迟响应 | 2026-09-22 |
+| `05` | **三问：`colcon build` 在干什么 / 为什么要 `source` / 为什么必须 ext4** | `build`/`install`/`log` 三处产物 · `rosidl` 生成头文件 · `AMENT_PREFIX_PATH`/`PATH`/`LD_LIBRARY_PATH` · NTFS 的**权限位/软链/大小写**三条硬伤 | 2026-09-24 |
+
+> 🗒 **命令笔记本（外置记忆）**：`学习笔记/ROS2命令/notes` —— 每条跑过的命令记一份，见 `03` §4「恢复三原则③」。
+> **双层工作流**（2026-09-22 定）：① 原始层 = 我写的（允许乱、允许错）② 成品层 = 本文件夹（AI 整理 + 源码行号/实测证据）③ **我能复述才算"认领"**。
 
 > 📌 **双层笔记工作流（2026-09-22 定）**：
 > **① 原始层 = 我写的**（每个工程 `src/README.md`：当天的问题、思考、自我批评，允许乱允许错）

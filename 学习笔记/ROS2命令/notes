@@ -1,0 +1,40 @@
+# ROS2 命令笔记本（W1 起）
+
+## 0. 每个新终端的第一件事
+source /opt/ros/humble/setup.bash
+source ~/ros2_ws/install/setup.bash         # ← 不 source 就报 Could not find package
+
+## 1. 工作空间与编译（2026-09-24）
+mkdir -p ~/repos && cd ~/repos && git clone git@github.com:HzEgw/stm32_study.git
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src && ln -s ~/repos/stm32_study/ros2_ws_src/uart_bridge uart_bridge
+cd ~/ros2_ws && rosdepc install -i --from-path src --rosdistro humble -y     # 可跳过（只依赖 rclcpp+std_msgs）
+colcon build --symlink-install --packages-select uart_bridge                 # 期望 Finished / 0 failed
+
+## 2. 假串口 + 灌帧（今天新增，★ 含坑）
+socat -d -d pty,raw,echo=0,link=/tmp/ttyA pty,raw,echo=0,link=/tmp/ttyB      # ① 看它打印的两行编号；编号每次会变
+ros2 run uart_bridge uart_bridge_node --ros-args -p port:=/tmp/ttyB -p baud:=115200
+printf '\xAA\x55\x02\x00\x07\x09' > /tmp/ttyA     # 合法帧 → /mcu/frame 出 [0,7]
+printf '\xAA\x55\x02\x00\x07\x08' > /tmp/ttyA     # 反证：SUM 错 → 不出帧
+
+## 3. 看话题 / 查节点
+ros2 topic list | grep mcu      ros2 topic echo /mcu/frame      ros2 topic info /mcu/frame
+ros2 topic hz /mcu/frame        ros2 node list                  ros2 param list /uart_bridge
+
+## 4. 今天踩的坑（一句话各一条）
+- socat 的 pts 编号每次启动都变 → 照抄示例 5/6 会踩空（详见 工具与环境\03）
+- 写错 pts（写进终端）→ 终端显示"乱码 U"（0x55='U'）
+- pgrep -x uart_bridge_node 查不到（comm 只留 15 字符）（详见 工具与环境\04）
+
+## 5. 三问（自己写答案）
+① colcon build 在干什么？
+构建包，我只知道我写的自定义消息接口，ros2会在build之后帮我生成头文件，souce的路径也是在install下面的，所以；build不能少
+② 为什么要 source install/setup.bash？
+类似是添加路径，实际上ros2 run 我更加偏向于是自动帮我找到我要启动的程序，那么相应的年就要提前加入途径
+③ 为什么必须在 ext4、不能 /mnt/d？
+d盘那就编译不了阿
+
+---
+
+> 📖 **这三问的校对与补充**（哪些说对了 / 要补什么 / 可验证判据）→ 见 `../05_colcon在干什么_为什么要source_为什么必须ext4.md`
+> 📌 本文件已按 `02` 篇的双层工作流处理：**你写的是"原始层"（保留原样，不改错别字）**，成品层放在 `学习笔记/` 里。
+
